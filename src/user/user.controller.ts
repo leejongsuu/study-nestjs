@@ -7,6 +7,8 @@ import {
   ParseIntPipe,
   Patch,
 } from '@nestjs/common';
+import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
+import { AuthenticatedUser } from 'src/auth/types/authenticated-user.type';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserResponseDto } from './dto/user-response.dto';
 import { UserService } from './user.service';
@@ -29,12 +31,16 @@ export class UserController {
   updateUser(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateUserDto: UpdateUserDto,
+    @CurrentUser() user: AuthenticatedUser,
   ): Promise<UserResponseDto> {
-    return this.userService.updateUser(id, updateUserDto);
+    return this.userService.updateUser(id, updateUserDto, user.id, user.role);
   }
 
   @Delete(':id')
-  deleteUser(@Param('id', ParseIntPipe) id: number): Promise<void> {
-    return this.userService.deleteUser(id);
+  deleteUser(
+    @Param('id', ParseIntPipe) id: number,
+    @CurrentUser() user: AuthenticatedUser,
+  ): Promise<void> {
+    return this.userService.deleteUser(id, user.id, user.role);
   }
 }

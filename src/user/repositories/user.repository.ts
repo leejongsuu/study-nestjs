@@ -37,6 +37,10 @@ export class UserRepository {
     await this.repository.delete(id);
   }
 
+  async update(user: User): Promise<User> {
+    return this.repository.save(user);
+  }
+
   async updateRefreshToken(
     userId: number,
     refreshToken: string | null,

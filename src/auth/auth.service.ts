@@ -8,6 +8,7 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { ErrorMessages } from 'src/common/constants/error-messages';
+import { Role } from 'src/user/types/role.enum';
 import { UserService } from 'src/user/user.service';
 import { AuthResponseDto } from './dto/auth-response.dto';
 import { LoginDto } from './dto/login.dto';
@@ -27,9 +28,9 @@ export class AuthService {
   async signUp(registerDto: RegisterDto): Promise<AuthResponseDto> {
     const { email, password, nickname } = registerDto;
 
-    const exitingUser = await this.userService.existsByEmail(email);
+    const existingUser = await this.userService.existsByEmail(email);
 
-    if (exitingUser) {
+    if (existingUser) {
       throw new ConflictException(ErrorMessages.AUTH.EMAIL_EXISTS);
     }
 
@@ -103,7 +104,7 @@ export class AuthService {
   private async generateTokens(
     userId: number,
     email: string,
-    role: string,
+    role: Role,
   ): Promise<Tokens> {
     const payload = { sub: userId, email, role };
 

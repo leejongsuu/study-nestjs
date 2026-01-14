@@ -4,6 +4,7 @@ import {
   Entity,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { Role } from '../types/role.enum';
 
 @Entity()
 export class User {
@@ -19,8 +20,8 @@ export class User {
   @Column()
   password: string;
 
-  @Column({ type: 'enum', enum: ['user', 'admin'], default: 'user' })
-  role: 'user' | 'admin';
+  @Column({ type: 'enum', enum: Role, default: Role.USER })
+  role: Role;
 
   @Column({ type: 'varchar', nullable: true })
   refreshToken: string | null;

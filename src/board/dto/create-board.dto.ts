@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString, MaxLength, MinLength } from 'class-validator';
+import { IsNotEmpty, IsString, MinLength } from 'class-validator';
 
 export class CreateBoardDto {
   @IsString()
@@ -7,6 +7,5 @@ export class CreateBoardDto {
   title: string;
 
   @IsString()
-  @MaxLength(100)
   content: string;
 }

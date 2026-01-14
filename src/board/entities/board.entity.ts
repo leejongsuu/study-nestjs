@@ -26,7 +26,6 @@ export class Board {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  // TODO: 유저 삭제시 게시글 삭제
   @ManyToOne(() => User, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'userId' })
   user: User;

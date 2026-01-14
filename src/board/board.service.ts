@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   Injectable,
   Logger,
   NotFoundException,
@@ -62,9 +61,6 @@ export class BoardService {
   ): Promise<BoardResponseDto> {
     const board = await this.findBoardOrThrow(id);
 
-    if (!userId) {
-      throw new BadRequestException('존재하지 않는 userId입니다.'); // This might be a logic error check, but keep it
-    }
     this.validateOwner(board.user.id, userId);
 
     Object.assign(board, updateBoardDto);

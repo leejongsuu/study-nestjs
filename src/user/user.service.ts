@@ -1,10 +1,16 @@
-import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  Logger,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { ErrorMessages } from 'src/common/constants/error-messages';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserResponseDto } from './dto/user-response.dto';
 import { User } from './entities/user.entity';
 import { UserRepository } from './repositories/user.repository';
+import { Role } from './types/role.enum';
 
 @Injectable()
 export class UserService {
@@ -51,11 +57,16 @@ export class UserService {
   async updateUser(
     id: number,
     payload: UpdateUserDto,
+    userId: number,
+    userRole: Role,
   ): Promise<UserResponseDto> {
+    if (userId !== id && userRole !== Role.ADMIN) {
+      throw new UnauthorizedException(ErrorMessages.USER.UNAUTHORIZED);
+    }
     const user = await this.findUserOrThrow(id);
 
     Object.assign(user, payload);
-    const updatedUser = await this.userRepository.create(user);
+    const updatedUser = await this.userRepository.update(user);
     this.logger.log(`User updated: ${id}`);
 
     return UserResponseDto.from(updatedUser);
@@ -65,7 +76,10 @@ export class UserService {
     return this.userRepository.updateRefreshToken(userId, refreshToken);
   }
 
-  async deleteUser(id: number): Promise<void> {
+  async deleteUser(id: number, userId: number, userRole: Role): Promise<void> {
+    if (userId !== id && userRole !== Role.ADMIN) {
+      throw new UnauthorizedException(ErrorMessages.USER.UNAUTHORIZED);
+    }
     await this.findUserOrThrow(id);
     await this.userRepository.delete(id);
     this.logger.log(`User deleted: ${id}`);
