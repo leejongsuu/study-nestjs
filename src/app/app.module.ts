@@ -7,6 +7,7 @@ import { BoardModule } from 'src/board/board.module';
 import { validate } from 'src/common/config/env.validation';
 import { HttpExceptionFilter } from 'src/common/filters/http-exception.filter';
 import { InternalServerErrorFilter } from 'src/common/filters/internal-server-error.filter';
+import { SearchModule } from 'src/search/search.module';
 import { UserModule } from 'src/user/user.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -16,6 +17,7 @@ import { AppService } from './app.service';
     UserModule,
     BoardModule,
     AuthModule,
+    SearchModule,
     // 1. ConfigModule 설정: .env 파일 로드
     ConfigModule.forRoot({
       isGlobal: true, // 전역으로 .env 설정 사용
